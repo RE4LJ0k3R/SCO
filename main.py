@@ -13,7 +13,7 @@ import glob
 
 UPDATE_THRESHOLD = 100
 UPDATE_DELAY = 400
-MEASRUEMENT_THRESHOLD = 1
+MEASUREMENT_THRESHOLD = 1
 measurement_counter = 0
 
 
@@ -142,12 +142,14 @@ def main(sc_name, ribs_enabled, path):
                         if len(files) > 11:  # check if other as had a protection event
                             continue
 
-                        if measurement_counter >= MEASRUEMENT_THRESHOLD:
+                        if measurement_counter >= MEASUREMENT_THRESHOLD:
                             continue
                         else:
                             measurement_counter += 1
 
                         stop_queue = updates[prefix]['stop_thread_queue']
+                        if stop_queue is None:  # addition in order to only start measurements for recent prefixes
+                            continue
                         Thread(target=call_measurement,
                                args=(prefix, sc_name, elem.time, stop_queue)).start()
                         logging.info("Reached threshold for prefix " + prefix)
@@ -202,7 +204,9 @@ if __name__ == '__main__':
             print("No filepath given.")
             exit(1)
 
-        logging.basicConfig(level=logging.DEBUG, filename=as_num + '_main.log')
+        logging.basicConfig(level=logging.DEBUG,
+                            format='%(asctime)s %(levelname)-8s %(message)s',
+                            filename=as_num + '_main.log')
         main(as_num, collect_ribs, filepath)
 
     except getopt.error as err:

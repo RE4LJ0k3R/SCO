@@ -417,9 +417,11 @@ def write_to_disk(filename, prefix_database):
 
 
 def load_dict(filename, announcement):
+    logging.info("loading dict: " + filename)
     if not announcement:
         found = False
         announcement_file = ""
+        error_counter = 0
         while not found:  # while loop is used if announcement is not saved at this moment
             max_time = 0
             for name in glob.glob(filename + "*"):
@@ -430,6 +432,9 @@ def load_dict(filename, announcement):
                     max_time = max(max_time, time)
             if not found:
                 sleep(5)  # avoid busy wait
+                error_counter += 1
+                if error_counter == 20:
+                    raise IOError
 
         try:
             with open(announcement_file) as fd:
