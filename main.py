@@ -136,10 +136,15 @@ def main(sc_name, ribs_enabled, path):
                     if not (elem.peer_asn in updates[prefix]['announcement']):
                         updates[prefix]['announcement'][elem.peer_asn] = elem.time
                     if updates[prefix]['announcement']['counter'] == UPDATE_THRESHOLD:
+                        logging.info("Threshold reached for prefix " + prefix)
                         # limitation part
                         files = glob.glob('*')
                         files = filter(lambda x: not x.startswith(as_num), files)
                         if len(files) > 11:  # check if other as had a protection event
+                            continue
+
+                        stop_queue = updates[prefix]['stop_thread_queue']
+                        if stop_queue is None:  # addition in order to only start measurements for recent prefixes
                             continue
 
                         if measurement_counter >= MEASUREMENT_THRESHOLD:
@@ -147,12 +152,9 @@ def main(sc_name, ribs_enabled, path):
                         else:
                             measurement_counter += 1
 
-                        stop_queue = updates[prefix]['stop_thread_queue']
-                        if stop_queue is None:  # addition in order to only start measurements for recent prefixes
-                            continue
                         Thread(target=call_measurement,
                                args=(prefix, sc_name, elem.time, stop_queue)).start()
-                        logging.info("Reached threshold for prefix " + prefix)
+                        logging.info("Started thread for prefix " + prefix)
 
                 elif elem.type == 'W':
                     if prefix in updates:
