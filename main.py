@@ -145,6 +145,8 @@ def main(sc_name, ribs_enabled, path):
 
                         stop_queue = updates[prefix]['stop_thread_queue']
                         if stop_queue is None:  # addition in order to only start measurements for recent prefixes
+                            logging.info("Stop queue is None")
+                            logging.info("Start time is " + str(updates[prefix]['start_time']))
                             continue
 
                         if measurement_counter >= MEASUREMENT_THRESHOLD:
