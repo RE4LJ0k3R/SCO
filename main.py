@@ -92,7 +92,6 @@ def main(sc_name, ribs_enabled, path):
                 prefix = elem.fields['prefix']
 
                 if tree_v4.get(prefix):  # filter out prefixes that belong to the as company as well as longer ones
-                    logging.info("Prefix is company prefix: " + prefix)
                     continue
 
                 if ribs_enabled:
@@ -182,7 +181,7 @@ def main(sc_name, ribs_enabled, path):
                                     measurement_counter -= 1
                                 logging.info("Deleting entry for prefix " + prefix)
                                 del updates[prefix]  # just some cleanup since all measurements should be started
-    except KeyboardInterrupt:
+    except:
         with open("database_" + as_num, 'w+') as fd:
             json.dump(updates, fd)
 

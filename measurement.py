@@ -208,7 +208,6 @@ def start_traceroute(destination_ip, probe_ids, announced, prefix_database, pref
     )
 
     atlas_request = AtlasCreateRequest(
-        start_time=datetime.utcnow(),
         key=ATLAS_API_KEY,
         measurements=[traceroute],
         sources=[source],
@@ -261,7 +260,6 @@ def start_pings(destination_ip, probe_ids, announced, prefix_database, stop_queu
 
         while should_work:
             atlas_request = AtlasCreateRequest(
-                start_time=datetime.utcnow()+timedelta(seconds=5),
                 key=ATLAS_API_KEY,
                 measurements=[ping],
                 sources=[source],
@@ -292,7 +290,6 @@ def start_pings(destination_ip, probe_ids, announced, prefix_database, stop_queu
             else:
                 sleep_index += 1
                 atlas_request = AtlasCreateRequest(
-                    start_time=datetime.utcnow()+timedelta(seconds=5),
                     stop_time=datetime.utcnow() + timedelta(hours=1),
                     key=ATLAS_API_KEY,
                     measurements=[ping],
@@ -369,7 +366,6 @@ def create_probe_ids(destination_ip, announced, prefix_database, prefix_database
         )
 
         atlas_request = AtlasCreateRequest(
-            start_time=datetime.utcnow(),
             key=ATLAS_API_KEY,
             measurements=[ping],
             sources=[source],
